@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Ôn Tập THPT 2026 - Gia Bảo Dev</title>
+    
+    <!-- Font Poppins bo tròn mềm mại phù hợp với Glassmorphism -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Thư viện MathJax để render công thức Toán/Hóa học siêu mượt -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            /* Nền Pastel sáng mượt mà */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            /* Hiệu ứng Kính trắng mờ */
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 10px 40px 0 rgba(31, 38, 135, 0.15);
+            
+            --text-main: #2c3e50;
+            --text-muted: #576574;
+            --primary: #667eea;
+            --primary-hover: #764ba2;
+            --correct-bg: rgba(46, 204, 113, 0.2);
+            --correct-text: #27ae60;
+            --wrong-bg: rgba(231, 76, 60, 0.2);
+            --wrong-text: #c0392b;
+            --highlight: #ff6a00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            line-height: 1.7;
+        }
+
+        /* --- HIỆU ỨNG HOA RƠI --- */
+        #petals-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; overflow: hidden;
+        }
+        .petal {
+            position: absolute; width: 15px; height: 15px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px 0 15px 15px;
+            opacity: 0;
+            box-shadow: 0 0 10px rgba(255, 154, 158, 0.5);
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        /* --- SIDEBAR KÍNH MỜ --- */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-right: 1px solid var(--glass-border);
+            padding: 30px 20px;
+            display: flex; flex-direction: column; z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 30px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            -webkit-background-clip: text; color: transparent;
+        }
+        .logo span { font-size: 0.9rem; color: var(--text-muted); display: block; margin-top: -5px; }
+
+        .nav-item {
+            padding: 15px 20px; margin-bottom: 12px;
+            border-radius: 20px; /* Bo góc cực mạnh */
+            cursor: pointer; transition: all 0.3s ease; 
+            color: var(--text-muted); font-weight: 600;
+            display: flex; align-items: center; gap: 15px;
+            background: rgba(255,255,255,0.3);
+            border: 1px solid transparent;
+        }
+
+        .nav-item i { width: 25px; text-align: center; font-size: 1.2rem; }
+        .nav-item:hover { background: rgba(255,255,255,0.9); color: var(--text-main); transform: translateX(5px); }
+        .nav-item.active {
+            background: #ffffff;
+            color: var(--primary);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.25);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(102, 126, 234, 0.5); border-radius: 10px; }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeUp 0.5s ease forwards; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- GLASS CARD (KHỐI KÍNH MỜ BO GÓC TRẮNG) --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px; /* BO GÓC TRÒN TRỊA */
+            padding: 45px; margin-bottom: 30px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; color: #1a1a1a; letter-spacing: -0.5px;}
+        h3 { font-size: 1.25rem; font-weight: 700; color: var(--primary); margin: 30px 0 15px 0; border-bottom: 2px dashed rgba(102, 126, 234, 0.3); padding-bottom: 10px;}
+        ul { padding-left: 20px; color: var(--text-main); margin-bottom: 20px; }
+        li { margin-bottom: 10px; }
+        code { background: rgba(102, 126, 234, 0.15); padding: 2px 6px; border-radius: 5px; color: var(--highlight); font-weight: bold;}
+        
+        /* Box làm nổi bật */
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-left: 5px solid var(--primary);
+            padding: 20px; border-radius: 0 20px 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        /* --- SUB-TABS (VIÊN THUỐC BO GÓC) --- */
+        .sub-tab-container {
+            display: flex; gap: 10px; margin-bottom: 30px;
+            background: rgba(255,255,255,0.4); padding: 8px;
+            border-radius: 50px; width: fit-content;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            flex-wrap: wrap;
+        }
+        .sub-tab {
+            padding: 10px 25px; border-radius: 50px; cursor: pointer;
+            transition: 0.3s; font-weight: 600; color: var(--text-muted); font-size: 0.95rem;
+        }
+        .sub-tab.active { background: #fff; color: var(--primary); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
+        .sub-content { display: none; }
+        .sub-content.active { display: block; animation: fadeIn 0.4s; }
+
+        /* --- BÀI TẬP TRẮC NGHIỆM --- */
+        .question-box {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--glass-border);
+            padding: 25px; border-radius: 20px; margin-bottom: 20px;
+        }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .option {
+            background: #fff; padding: 15px 20px;
+            border-radius: 15px; border: 1px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer; transition: 0.2s; color: var(--text-main); font-weight: 500;
+        }
+        .option:hover { box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2); transform: translateY(-2px); border-color: var(--primary); }
+        
+        .option.correct { background: var(--correct-bg); border-color: var(--correct-text); color: var(--correct-text); font-weight: 700; }
+        .option.wrong { background: var(--wrong-bg); border-color: var(--wrong-text); color: var(--wrong-text); }
+        
+        .feedback { margin-top: 15px; font-weight: 600; display: none; padding: 15px; border-radius: 15px; font-size: 0.95rem; background: #fff;}
+        .feedback.show { display: block; }
+
+        footer { text-align: center; margin-top: 40px; padding: 20px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.5);}
+        footer span { color: var(--primary); font-weight: bold; }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar {
+                position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+                flex-direction: row; justify-content: space-around; padding: 10px;
+                background: rgba(255, 255, 255, 0.95); z-index: 1000;
+                border-top: 1px solid var(--glass-border); border-right: none;
+            }
+            .logo, .nav-item span { display: none; }
+            .nav-item { padding: 0; margin: 0; width: 50px; height: 50px; justify-content: center; border-radius: 50%; }
+            .main-content { padding: 15px; padding-bottom: 100px; }
+            .sub-tab-container { width: 100%; overflow-x: auto; flex-wrap: nowrap;}
+            .sub-tab { white-space: nowrap; }
+            .options { grid-template-columns: 1fr; }
+            .glass-card { padding: 25px; border-radius: 25px; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hoa rơi -->
+    <div id="petals-container"></div>
+
+    <aside class="sidebar">
+        <div class="logo">GiaBảo.Dev<br><span>Hệ Thống Ôn Tập 2026</span></div>
+        <div class="nav-item active" onclick="switchMainTab(this, 'home')">
+            <i class="fas fa-home"></i> <span>Trang Chủ</span>
+        </div>
+        <div class="nav-item" onclick="switchMainTab(this, 'hoa')">
+            <i class="fas fa-flask"></i> <span>Hóa Học</span>
+        </div>
+        <div class="nav-item" onclick="switchMainTab(this, 'toan')">
+            <i class="fas fa-calculator"></i> <span>Toán Học</span>
+        </div>
+        <div class="nav-item" onclick="switchMainTab(this, 'su')">
+            <i class="fas fa-landmark"></i> <span>Lịch Sử</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <!-- ================= TRANG CHỦ ================= -->
+        <section id="home" class="section active">
+            <div class="glass-card">
+                <h1>Hệ Thống Ôn Tập - 2026</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">
+                    Nền tảng học tập được mở rộng toàn diện, trang bị thêm hệ thống công thức, bí kíp Casio và mẹo học siêu tốc dành cho học sinh THPT.
+                </p>
+                <br>
+                <div class="highlight-box">
+                    <h3 style="margin-top:0; border:none; padding:0; color: var(--primary)"><i class="fas fa-bolt"></i> Có gì trong bản cập nhật này?</h3>
+                    <ul style="margin-bottom:0;">
+                        <li><strong>Chính xác năm học:</strong> Mới nhất 2026 .</li>
+                        <li><strong>Bổ sung Tab Công thức & Mẹo:</strong> Cung cấp công thức tính toán, hệ số, và kỹ năng bấm Casio cực nhanh.</li>
+                        <li><strong>Kiến thức mở rộng:</strong> Phủ toàn bộ ngóc ngách của ma trận Toán, Hóa, Sử.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= HÓA HỌC ================= -->
+        <section id="hoa" class="section">
+            <div class="glass-card">
+                <h1>Hóa Học 10</h1>
+                <div class="sub-tab-container">
+                    <div class="sub-tab active" onclick="switchSubTab(this, 'hoa', 'hoa-lythuyet')">Lý thuyết Trọng tâm</div>
+                    <div class="sub-tab" onclick="switchSubTab(this, 'hoa', 'hoa-meo')">Công thức & Mẹo</div>
+                    <div class="sub-tab" onclick="switchSubTab(this, 'hoa', 'hoa-baitap')">Thực chiến</div>
+                </div>
+
+                <!-- Lý thuyết Hóa -->
+                <div id="hoa-lythuyet" class="sub-content active">
+                    <h3>1. Phản ứng Oxi hóa - Khử</h3>
+                    <ul>
+                        <li><strong>Chất khử:</strong> Là chất nhường electron, có số oxi hóa tăng.</li>
+                        <li><strong>Chất oxi hóa:</strong> Là chất nhận electron, có số oxi hóa giảm.</li>
+                        <li><strong>Quá trình oxi hóa:</strong> Là quá trình chất khử nhường electron.</li>
+                        <li><strong>Quy tắc xác định số oxi hóa:</strong> Đơn chất bằng 0. Trong hợp chất O là -2, H là +1 (trừ một số ngoại lệ). Kim loại có hóa trị n thì số oxi hóa là +n.</li>
+                    </ul>
+
+                    <h3>2. Năng lượng Hóa học</h3>
+                    <ul>
+                        <li><strong>Phản ứng tỏa nhiệt ($\Delta_rH < 0$):</strong> Giải phóng năng lượng dưới dạng nhiệt. Môi trường nóng lên. (VD: đốt than, nến).</li>
+                        <li><strong>Phản ứng thu nhiệt ($\Delta_rH > 0$):</strong> Hấp thụ nhiệt. Môi trường lạnh đi hoặc cần đun nóng liên tục. (VD: Nung $CaCO_3$).</li>
+                        <li><strong>Điều kiện chuẩn:</strong> Nhiệt độ 25°C (298K), áp suất 1 bar.</li>
+                    </ul>
+
+                    <h3>3. Tốc độ phản ứng</h3>
+                    <ul>
+                        <li><strong>Khái niệm:</strong> Đại lượng đặc trưng cho sự biến thiên nồng độ chất phản ứng/sản phẩm trong một đơn vị thời gian.</li>
+                        <li><strong>Các yếu tố ảnh hưởng:</strong> Nồng độ, Áp suất (khí), Nhiệt độ, Diện tích tiếp xúc (rắn), Chất xúc tác.</li>
+                    </ul>
+                </div>
+
+                <!-- Mẹo Hóa -->
+                <div id="hoa-meo" class="sub-content">
+                    <div class="highlight-box">
+                        <h3 style="margin-top:0;"><i class="fas fa-magic"></i> Thần chú nhớ Oxi hóa - Khử</h3>
+                        <ul>
+                            <li><strong>Khử cho - O nhận:</strong> Chất Khử thì CHO e. Chất Oxi hóa thì NHẬN e.</li>
+                            <li><strong>Khử tăng - O giảm:</strong> Sau phản ứng, số oxi hóa TĂNG là chất Khử, GIẢM là chất Oxi hóa.</li>
+                            <li><strong>Chất gì - Sự nấy ngược lại:</strong> Chất khử xảy ra <em>sự oxi hóa</em>. Chất oxi hóa xảy ra <em>sự khử</em>.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <h3 style="margin-top:0;"><i class="fas fa-calculator"></i> Tổng hợp Công thức Hóa</h3>
+                        <ul>
+                            <li><strong>Biến thiên Enthalpy:</strong> $\Delta_rH^o_{298} = \sum \Delta_fH^o_{298}(\text{sản phẩm}) - \sum \Delta_fH^o_{298}(\text{chất đầu})$.</li>
+                            <li><strong>Tính theo Năng lượng liên kết:</strong> $\Delta_rH^o_{298} = \sum E_b(\text{chất đầu}) - \sum E_b(\text{sản phẩm})$.</li>
+                            <li><strong>Hệ số nhiệt độ Van't Hoff:</strong> Mối quan hệ giữa tốc độ và nhiệt độ: $v_{t2} = v_{t1} \cdot \gamma^{\frac{t_2-t_1}{10}}$.</li>
+                            <li><strong>Tính tốc độ trung bình:</strong> $\overline{v} = \pm \frac{\Delta C}{\Delta t}$ (Dấu + cho sản phẩm, dấu - cho chất tham gia).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Bài tập Hóa -->
+                <div id="hoa-baitap" class="sub-content">
+                    <div class="question-box">
+                        <p><strong>Câu 1:</strong> Cho quá trình $N^{+5} + 3e \rightarrow N^{+2}$, đây là quá trình:</p>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer(this)">A. Oxi hóa.</div>
+                            <div class="option" onclick="checkAnswer(this)" data-correct="true">B. Khử.</div>
+                            <div class="option" onclick="checkAnswer(this)">C. Nhận proton.</div>
+                            <div class="option" onclick="checkAnswer(this)">D. Tự oxi hóa – khử.</div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+                    <div class="question-box">
+                        <p><strong>Câu 2:</strong> Dựa vào công thức Van't Hoff, khi tăng nhiệt độ thêm 10°C thì tốc độ của một phản ứng tăng 2 lần ($\gamma = 2$). Nếu tăng nhiệt độ từ 20°C lên 50°C thì tốc độ phản ứng tăng bao nhiêu lần?</p>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer(this)">A. 4 lần.</div>
+                            <div class="option" onclick="checkAnswer(this)">B. 6 lần.</div>
+                            <div class="option" onclick="checkAnswer(this)" data-correct="true">C. 8 lần.</div>
+                            <div class="option" onclick="checkAnswer(this)">D. 16 lần.</div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TOÁN HỌC ================= -->
+        <section id="toan" class="section">
+            <div class="glass-card">
+                <h1>Toán Học 10</h1>
+                <div class="sub-tab-container">
+                    <div class="sub-tab active" onclick="switchSubTab(this, 'toan', 'toan-lythuyet')">Lý thuyết Trọng tâm</div>
+                    <div class="sub-tab" onclick="switchSubTab(this, 'toan', 'toan-meo')">Công thức & Skill Casio</div>
+                    <div class="sub-tab" onclick="switchSubTab(this, 'toan', 'toan-baitap')">Thực chiến</div>
+                </div>
+
+                <div id="toan-lythuyet" class="sub-content active">
+                    <h3>1. Đại số và Giải tích</h3>
+                    <ul>
+                        <li><strong>Mệnh đề - Tập hợp:</strong> Nắm vững các phép Giao ($\cap$), Hợp ($\cup$), Hiệu ($\setminus$).</li>
+                        <li><strong>Hàm số bậc hai ($y=ax^2+bx+c$):</strong> Đỉnh Parabol $I\left(-\frac{b}{2a}; -\frac{\Delta}{4a}\right)$. Trục đối xứng $x = -\frac{b}{2a}$.</li>
+                        <li><strong>Dấu tam thức bậc hai:</strong> <em>"Trong trái, ngoài cùng"</em> (Khi $\Delta > 0$, trong khoảng 2 nghiệm trái dấu hệ số a, ngoài khoảng cùng dấu a).</li>
+                    </ul>
+
+                    <h3>2. Thống kê & Đại số tổ hợp</h3>
+                    <ul>
+                        <li><strong>Đại số tổ hợp:</strong> Phân biệt rõ Hoán vị (Đổi chỗ n phần tử: $P_n = n!$), Chỉnh hợp (Lấy ra k phần tử CÓ thứ tự: $A_n^k$), Tổ hợp (Lấy ra k phần tử KHÔNG thứ tự: $C_n^k$).</li>
+                        <li><strong>Thống kê:</strong> Đo xu thế trung tâm (Số trung bình, Trung vị, Mốt). Đo độ phân tán (Khoảng biến thiên, Phương sai, Độ lệch chuẩn).</li>
+                    </ul>
+                </div>
+
+                <div id="toan-meo" class="sub-content">
+                    <div class="highlight-box">
+                        <h3 style="margin-top:0;"><i class="fas fa-superscript"></i> Bộ Công Thức Cốt Lõi</h3>
+                        <ul>
+                            <li><strong>Định lý Cosin:</strong> $a^2 = b^2 + c^2 - 2bc \cdot \cos A \implies \cos A = \frac{b^2+c^2-a^2}{2bc}$</li>
+                            <li><strong>Tích vô hướng 2 vectơ:</strong> $\vec{a} \cdot \vec{b} = |\vec{a}| \cdot |\vec{b}| \cdot \cos(\vec{a}, \vec{b})$.</li>
+                            <li><strong>Khoảng cách từ điểm $M(x_0, y_0)$ đến đt $\Delta (ax+by+c=0)$:</strong> $d = \frac{|ax_0+by_0+c|}{\sqrt{a^2+b^2}}$</li>
+                            <li><strong>Phương trình đường tròn:</strong> $(x-a)^2 + (y-b)^2 = R^2$ (Tâm $I(a;b)$, bán kính R).</li>
+                            <li><strong>Nhị thức Newton (Cơ bản):</strong> $(a+b)^4 = C_4^0 a^4 + C_4^1 a^3b + C_4^2 a^2b^2 + C_4^3 ab^3 + C_4^4 b^4$.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <h3 style="margin-top:0;"><i class="fas fa-calculator"></i> Kỹ năng bấm máy Casio fx-580VNX</h3>
+                        <ul>
+                            <li><strong>Giải Bất phương trình bậc 2 siêu tốc:</strong> Bấm <code>MENU</code> $\rightarrow$ <code>A</code> (Dấu trừ trong ngoặc) $\rightarrow$ Chọn <code>2</code> (BPT bậc 2) $\rightarrow$ Chọn dấu $\rightarrow$ Nhập hệ số. Ra ngay tập nghiệm.</li>
+                            <li><strong>Tìm đỉnh Parabol (Min/Max):</strong> Bấm <code>MENU 9 2 2</code> (Giải PT bậc 2). Bấm <code>=</code> đi qua các nghiệm $x_1, x_2$. Máy hiện <em>"X-Value Minimum/Maximum"</em> chính là tọa độ đỉnh $x_I, y_I$.</li>
+                            <li><strong>Tính Phương sai & Độ lệch chuẩn:</strong> Bấm <code>MENU 6</code> (Thống kê) $\rightarrow$ Nhập số liệu $\rightarrow$ Bấm <code>OPTN</code> $\rightarrow$ Chọn <code>2</code> (Tính toán 1 biến). Máy tự ra $\overline{x}, S^2, S$.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="toan-baitap" class="sub-content">
+                    <div class="question-box">
+                        <p><strong>Câu 1:</strong> Tìm tọa độ đỉnh I của Parabol $(P): y = x^2 - 4x + 3$.</p>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer(this)">A. $I(-2; 15)$</div>
+                            <div class="option" onclick="checkAnswer(this)" data-correct="true">B. $I(2; -1)$</div>
+                            <div class="option" onclick="checkAnswer(this)">C. $I(2; 3)$</div>
+                            <div class="option" onclick="checkAnswer(this)">D. $I(-2; -1)$</div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= LỊCH SỬ ================= -->
+        <section id="su" class="section">
+            <div class="glass-card">
+                <h1>Lịch Sử 10</h1>
+                <div class="sub-tab-container">
+                    <div class="sub-tab active" onclick="switchSubTab(this, 'su', 'su-lythuyet')">Lý thuyết Trọng tâm</div>
+                    <div class="sub-tab" onclick="switchSubTab(this, 'su', 'su-meo')">Mẹo & Từ Khóa</div>
+                    <div class="sub-tab" onclick="switchSubTab(this, 'su', 'su-baitap')">Thực chiến</div>
+                </div>
+
+                <div id="su-lythuyet" class="sub-content active">
+                    <h3>1. Các cuộc Cách mạng Công nghiệp</h3>
+                    <ul>
+                        <li><strong>Cách mạng công nghiệp lần 1 (Cuối TK 18):</strong> Khởi đầu ở Anh. Phát minh vĩ đại: Động cơ hơi nước (James Watt). Chuyển từ lao động thủ công sang cơ khí hóa.</li>
+                        <li><strong>Cách mạng công nghiệp lần 2 (Cuối TK 19):</strong> Khởi đầu ở Mỹ & Đức. Phát minh vĩ đại: Điện năng, động cơ đốt trong.</li>
+                        <li><strong>Cách mạng công nghiệp lần 3 (Thập niên 70 TK 20):</strong> Phát minh: Máy tính, internet, tự động hóa.</li>
+                    </ul>
+
+                    <h3>2. Văn minh Đông Nam Á thời Cổ - Trung đại</h3>
+                    <ul>
+                        <li><strong>Cơ sở:</strong> Nông nghiệp lúa nước. Ảnh hưởng sâu sắc từ văn hóa Ấn Độ và Trung Hoa.</li>
+                        <li><strong>Thành tựu:</strong> Tín ngưỡng thờ thần thiên nhiên. Kiến trúc chịu ảnh hưởng của Phật giáo và Hin-đu giáo (Đền Angkor, Borobudur).</li>
+                    </ul>
+
+                    <h3>3. Văn minh trên đất nước Việt Nam (Trước 1858)</h3>
+                    <ul>
+                        <li><strong>Văn Lang - Âu Lạc:</strong> Nông nghiệp lúa nước, đúc đồng thau. Hiện vật tiêu biểu: <strong>Trống đồng Đông Sơn</strong>.</li>
+                        <li><strong>Chăm-pa:</strong> Miền Trung, ảnh hưởng Ấn Độ giáo. Kiến trúc: <strong>Tháp gạch nung</strong> (Mỹ Sơn).</li>
+                        <li><strong>Phù Nam:</strong> Đồng bằng sông Cửu Long. Kinh tế chủ đạo: <strong>Thương mại đường biển</strong> (Cảng thị Óc Eo).</li>
+                    </ul>
+                </div>
+
+                <div id="su-meo" class="sub-content">
+                    <div class="highlight-box">
+                        <h3 style="margin-top:0;"><i class="fas fa-key"></i> Mẹo "Học Sử bằng Từ Khóa"</h3>
+                        <p>Tuyệt đối không học thuộc lòng dài dòng. Gặp câu hỏi trắc nghiệm, hãy quét tìm các cụm từ sau:</p>
+                        <ul>
+                            <li>Nhìn thấy <strong>"CMCN lần 1"</strong> $\rightarrow$ Khoanh ngay <strong>Nước Anh, Động cơ hơi nước</strong>.</li>
+                            <li>Nhìn thấy <strong>"CMCN lần 2"</strong> $\rightarrow$ Khoanh ngay <strong>Mỹ/Đức, Điện năng, Động cơ đốt trong</strong>.</li>
+                            <li>Nhìn thấy <strong>"Văn Lang - Âu Lạc"</strong> $\rightarrow$ Khoanh ngay <strong>Trống đồng Đông Sơn, Đúc đồng thau</strong>.</li>
+                            <li>Nhìn thấy <strong>"Chăm-pa"</strong> $\rightarrow$ Khoanh ngay <strong>Ấn Độ giáo, Tháp gạch, Chữ Phạn</strong>.</li>
+                            <li>Nhìn thấy <strong>"Phù Nam"</strong> $\rightarrow$ Khoanh ngay <strong>Thương mại đường biển, Óc Eo, Tây Nam Bộ</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="su-baitap" class="sub-content">
+                    <div class="question-box">
+                        <p><strong>Câu 1:</strong> Hiện vật tiêu biểu nhất thể hiện đỉnh cao của nền văn minh Văn Lang - Âu Lạc là gì?</p>
+                        <div class="options">
+                            <div class="option" onclick="checkAnswer(this)" data-correct="true">A. Trống đồng Đông Sơn.</div>
+                            <div class="option" onclick="checkAnswer(this)">B. Tháp bằng gạch nung.</div>
+                            <div class="option" onclick="checkAnswer(this)">C. Chữ viết trên mai rùa.</div>
+                            <div class="option" onclick="checkAnswer(this)">D. Tiền đồng.</div>
+                        </div>
+                        <div class="feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            Bản quyền thuộc về <span>Gia Bảo Dev</span> &copy; 2026. <br>
+            Thiết kế Glassmorphism Light Theme - Tối ưu hóa học tập THPT Thanh Miện III.
+        </footer>
+
+    </main>
+
+    <script>
+        // --- HIỆU ỨNG HOA RƠI ---
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 4 + 6 + 's';
+            petal.style.width = Math.random() * 10 + 8 + 'px';
+            petal.style.height = petal.style.width;
+            document.getElementById('petals-container').appendChild(petal);
+            setTimeout(() => { petal.remove(); }, 10000);
+        }
+        setInterval(createPetal, 400);
+
+        // --- CHUYỂN TAB CHÍNH ---
+        function switchMainTab(element, tabId) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelector('.main-content').scrollTop = 0;
+        }
+
+        // --- CHUYỂN TABS PHỤ ---
+        function switchSubTab(element, parentSec, subTabId) {
+            const section = document.getElementById(parentSec);
+            section.querySelectorAll('.sub-tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+
+            section.querySelectorAll('.sub-content').forEach(content => content.classList.remove('active'));
+            section.querySelector('#' + subTabId).classList.add('active');
+        }
+
+        // --- LOGIC CHẤM ĐIỂM TRẮC NGHIỆM ---
+        function checkAnswer(selectedOption) {
+            const parent = selectedOption.parentElement;
+            if (parent.classList.contains('answered')) return;
+            parent.classList.add('answered');
+            
+            const isCorrect = selectedOption.getAttribute('data-correct') === 'true';
+            const feedbackEl = parent.nextElementSibling;
+            
+            const options = parent.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.style.cursor = 'default';
+                if (opt.getAttribute('data-correct') === 'true') {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (!isCorrect) {
+                selectedOption.classList.add('wrong');
+                feedbackEl.innerHTML = '<i class="fas fa-times-circle"></i> Sai rồi! Hãy đọc lại phần Lý thuyết/Mẹo nhé.';
+                feedbackEl.style.backgroundColor = 'var(--wrong-bg)';
+                feedbackEl.style.color = 'var(--wrong-text)';
+                feedbackEl.style.border = '1px solid rgba(231, 76, 60, 0.3)';
+            } else {
+                feedbackEl.innerHTML = '<i class="fas fa-check-circle"></i> Chính xác! Bạn áp dụng kiến thức rất tốt.';
+                feedbackEl.style.backgroundColor = 'var(--correct-bg)';
+                feedbackEl.style.color = 'var(--correct-text)';
+                feedbackEl.style.border = '1px solid rgba(46, 204, 113, 0.3)';
+            }
+            feedbackEl.classList.add('show');
+        }
+    </script>
+</body>
+</html>
