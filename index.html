@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập THPT 2026 - Bản Nâng Cấp Toàn Diện</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Hệ Thống Tra Cứu Điểm THPT TM3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-purple: #8b5cf6;
+            --primary-blue: #3b82f6;
+            --dark-bg: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,504 +24,279 @@
         }
 
         body {
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.15), transparent 25%);
+            color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: rgba(255,255,255,0.4);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255,255,255,0.6);
-            padding: 30px 20px;
-            height: 100vh;
-            position: sticky;
-            top: 0;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .nav-item {
-            display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 14px 20px;
-            border-radius: 24px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: #2c3e50;
-            font-weight: 600;
-            background: rgba(255,255,255,0.3);
         }
 
-        .nav-item i { width: 24px; font-size: 1.2rem; }
-        .nav-item:hover, .nav-item.active {
-            background: white;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            color: #667eea;
-        }
-
-        /* Main */
-        .main {
-            flex: 1;
-            padding: 30px 40px;
-            overflow-y: auto;
-            height: 100vh;
-        }
-
-        /* Glass card */
-        .glass-card {
-            background: rgba(255,255,255,0.55);
-            backdrop-filter: blur(16px);
-            border-radius: 32px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255,255,255,0.7);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #1e293b;
-        }
-
-        h3 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin: 20px 0 12px;
-            color: #4f46e5;
-            border-left: 5px solid #4f46e5;
-            padding-left: 15px;
-        }
-
-        .sub-tab-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .sub-tab {
-            background: rgba(255,255,255,0.5);
-            padding: 8px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .sub-tab.active {
-            background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            color: #4f46e5;
-            font-weight: 700;
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .formula-box {
-            background: rgba(0,0,0,0.03);
-            border-radius: 24px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 4px solid #f97316;
-        }
-
-        .tip-box {
-            background: rgba(255,237,213,0.6);
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
-            padding: 18px;
-            margin: 15px 0;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .question {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 15px 0;
-        }
-
-        .option {
-            background: #f8fafc;
-            padding: 12px 16px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #e2e8f0;
-        }
-
-        .option:hover { background: #eef2ff; transform: translateY(-2px); }
-        .option.correct { background: #dcfce7; border-color: #22c55e; color: #166534; }
-        .option.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; text-decoration: line-through; }
-
-        .feedback {
-            margin-top: 12px;
-            padding: 12px;
-            border-radius: 16px;
-            display: none;
-        }
-
-        footer {
+        .header {
             text-align: center;
-            padding: 20px;
-            color: #334155;
-            font-size: 0.85rem;
+            margin-bottom: 2rem;
         }
 
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                overflow-x: auto;
-                position: fixed;
-                bottom: 0;
-                top: auto;
-                z-index: 10;
-                padding: 10px;
-                gap: 8px;
-            }
-            .nav-item span { display: none; }
-            .nav-item i { margin: 0; }
-            .main { padding: 20px; margin-bottom: 80px; }
-            .options { grid-template-columns: 1fr; }
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
         }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+
+        .highlight-score {
+            color: #10b981; /* Green for high scores */
+            font-weight: bold;
+        }
+        
+        .total-col {
+            font-weight: bold;
+            color: #fbbf24;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .footer span {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary-purple); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-blue); }
     </style>
 </head>
 <body>
-<div class="sidebar">
-    <div class="logo">📘 GiaBảo.Dev<br><span style="font-size: 0.7rem;">Ôn tập toàn diện 2026</span></div>
-    <div class="nav-item active" data-tab="home"><i class="fas fa-home"></i><span>Trang chủ</span></div>
-    <div class="nav-item" data-tab="hoa"><i class="fas fa-flask"></i><span>Hóa học 10</span></div>
-    <div class="nav-item" data-tab="toan"><i class="fas fa-calculator"></i><span>Toán học 10</span></div>
-    <div class="nav-item" data-tab="su"><i class="fas fa-landmark"></i><span>Lịch sử 10</span></div>
-</div>
 
-<div class="main">
-    <!-- Trang chủ -->
-    <div id="home" class="tab-content active">
-        <div class="glass-card">
-            <h1>🎯 Hệ thống ôn tập chuẩn ma trận 2026</h1>
-            <p>Tổng hợp kiến thức 3 môn: <strong>Hóa học, Toán học, Lịch sử</strong> theo đúng cấu trúc đề khảo sát. Bao gồm lý thuyết trọng tâm, công thức, mẹo Casio, mẹo học sử và bài tập thực chiến có đáp án.</p>
-            <div class="tip-box">
-                <i class="fas fa-star-of-life" style="color:#f97316;"></i> <strong>Bản nâng cấp PRO</strong><br>
-                ✅ Đủ dạng: Nhận biết – Thông hiểu – Vận dụng<br>
-                ✅ Công thức & biến thiên enthalpy, tốc độ phản ứng, oxi hóa khử<br>
-                ✅ Toán: vecto, đường thẳng, đường tròn, tổ hợp – thống kê<br>
-                ✅ Sử: cách mạng công nghiệp, văn minh ĐNA, Văn Lang – Chăm – Phù Nam
-            </div>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>Bảng Điểm Học Sinh</h1>
+            <p>Khối 10 - THPT TM3</p>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="searchInput" class="search-box" placeholder="Tìm kiếm theo tên hoặc SBD...">
+        </div>
+
+        <div class="table-wrapper">
+            <table id="scoreTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Họ và tên</th>
+                        <th>Ngày sinh</th>
+                        <th>SBD</th>
+                        <th>Phòng</th>
+                        <th>Ca 1</th>
+                        <th>Ca 2</th>
+                        <th>Toán</th>
+                        <th>Điểm Ca 1</th>
+                        <th>Điểm Ca 2</th>
+                        <th class="total-col">Tổng Điểm</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- HÓA HỌC -->
-    <div id="hoa" class="tab-content">
-        <div class="glass-card">
-            <h1>🧪 Hóa học 10 – Phản ứng oxi hóa khử, Năng lượng, Tốc độ</h1>
-            <div class="sub-tab-bar">
-                <div class="sub-tab active" data-sub="hoa-lythuyet">📘 Lý thuyết</div>
-                <div class="sub-tab" data-sub="hoa-congthuc">📐 Công thức & Mẹo</div>
-                <div class="sub-tab" data-sub="hoa-baitap">✍️ Trắc nghiệm</div>
-            </div>
-            <div id="hoa-lythuyet" class="tab-subcontent active">
-                <h3>⚡ Phản ứng oxi hóa – khử</h3>
-                <ul>
-                    <li><strong>Chất khử</strong> (bị oxi hóa) – nhường e – số oxi hóa tăng.</li>
-                    <li><strong>Chất oxi hóa</strong> (bị khử) – nhận e – số oxi hóa giảm.</li>
-                    <li>Quy tắc xác định số oxi hóa: Đơn chất = 0; H thường +1 (trừ hidrua), O thường -2; tổng đại số = 0 (phân tử) hoặc = điện tích ion.</li>
-                </ul>
-                <h3>🔥 Năng lượng hóa học</h3>
-                <ul>
-                    <li>Phản ứng tỏa nhiệt: Δ<sub>r</sub>H<sup>0</sup><sub>298</sub> < 0 → giải phóng nhiệt.</li>
-                    <li>Phản ứng thu nhiệt: Δ<sub>r</sub>H<sup>0</sup><sub>298</sub> > 0 → hấp thụ nhiệt.</li>
-                    <li>Điều kiện chuẩn: 25°C (298K), 1 bar (khí), 1 mol/L (dd).</li>
-                    <li>Công thức: Δ<sub>r</sub>H<sup>0</sup><sub>298</sub> = ΣΔ<sub>f</sub>H<sup>0</sup><sub>sp</sub> – ΣΔ<sub>f</sub>H<sup>0</sup><sub>cđ</sub> = ΣE<sub>b</sub>(cđ) – ΣE<sub>b</sub>(sp).</li>
-                </ul>
-                <h3>⏱️ Tốc độ phản ứng</h3>
-                <ul>
-                    <li>v = ±ΔC/Δt, ảnh hưởng bởi: nồng độ, áp suất, nhiệt độ, diện tích bề mặt, chất xúc tác.</li>
-                    <li>Hệ số Van’t Hoff: v<sub>2</sub>/v<sub>1</sub> = γ<sup>(t2-t1)/10</sup>.</li>
-                </ul>
-            </div>
-            <div id="hoa-congthuc" class="tab-subcontent">
-                <div class="formula-box">
-                    <i class="fas fa-calculator"></i> <strong>Công thức tính biến thiên enthalpy chuẩn:</strong><br>
-                    \( \Delta_r H_{298}^0 = \sum \Delta_f H_{298}^0 (sp) - \sum \Delta_f H_{298}^0 (cđ) \)<br>
-                    \( \Delta_r H_{298}^0 = \sum E_b (cđ) - \sum E_b (sp) \)
-                </div>
-                <div class="tip-box">
-                    🧠 <strong>Mẹo nhớ Oxi hóa – Khử:</strong><br>
-                    “Khử cho – O nhận” (Chất khử cho e, chất oxi hóa nhận e)<br>
-                    “Khử tăng – O giảm” (số oxi hóa chất khử tăng, chất oxi hóa giảm)
-                </div>
-                <div class="formula-box">
-                    ⚙️ <strong>Tốc độ phản ứng trung bình:</strong><br>
-                    \( \bar{v} = -\frac{1}{a}\frac{\Delta C_A}{\Delta t} = -\frac{1}{b}\frac{\Delta C_B}{\Delta t} = \frac{1}{m}\frac{\Delta C_M}{\Delta t} \)
-                </div>
-            </div>
-            <div id="hoa-baitap" class="tab-subcontent">
-                <div class="question">
-                    <p><strong>Câu 1:</strong> Cho quá trình \( N^{+5} + 3e \to N^{+2} \). Đây là quá trình:</p>
-                    <div class="options">
-                        <div class="option">A. Oxi hóa</div>
-                        <div class="option" data-correct="true">B. Khử</div>
-                        <div class="option">C. Nhận proton</div>
-                        <div class="option">D. Tự oxi hóa – khử</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-                <div class="question">
-                    <p><strong>Câu 2:</strong> Cho phản ứng: \( 2SO_2 + O_2 \to 2SO_3 \). Chất khử là:</p>
-                    <div class="options">
-                        <div class="option" data-correct="true">A. SO₂</div>
-                        <div class="option">B. O₂</div>
-                        <div class="option">C. SO₃</div>
-                        <div class="option">D. Cả A và B</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-                <div class="question">
-                    <p><strong>Câu 3:</strong> Nhiệt tạo thành chuẩn của CO₂(g) là -393,5 kJ/mol. Đốt cháy 1 mol C(graphite) toả ra bao nhiêu kJ?</p>
-                    <div class="options">
-                        <div class="option">A. +393,5</div>
-                        <div class="option" data-correct="true">B. -393,5</div>
-                        <div class="option">C. 0</div>
-                        <div class="option">D. +196,75</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-            </div>
-        </div>
+    <div class="footer">
+        Bản quyền by <span>Gia Bảo Coder</span>
     </div>
 
-    <!-- TOÁN HỌC -->
-    <div id="toan" class="tab-content">
-        <div class="glass-card">
-            <h1>📐 Toán 10 – Đại số, Hình học, Thống kê, Tổ hợp</h1>
-            <div class="sub-tab-bar">
-                <div class="sub-tab active" data-sub="toan-lythuyet">📖 Lý thuyết</div>
-                <div class="sub-tab" data-sub="toan-congthuc">📏 Công thức & Casio</div>
-                <div class="sub-tab" data-sub="toan-baitap">📝 Luyện tập</div>
-            </div>
-            <div id="toan-lythuyet" class="tab-subcontent active">
-                <h3>🧩 Hàm số bậc hai</h3>
-                <p>Đỉnh \( I\left(-\frac{b}{2a}; -\frac{\Delta}{4a}\right) \), trục đối xứng \(x = -\frac{b}{2a}\). Chiều biến thiên phụ thuộc a.</p>
-                <h3>📐 Hệ thức lượng trong tam giác</h3>
-                <p>Định lý cos: \( a^2 = b^2 + c^2 - 2bc\cos A \).<br>Định lý sin: \( \frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} = 2R \).</p>
-                <h3>🧮 Vectơ</h3>
-                <p>Biểu thức tọa độ: \(\vec{u} \pm \vec{v} = (x_1 \pm x_2; y_1 \pm y_2)\), tích vô hướng \(\vec{u}\cdot\vec{v}=x_1x_2+y_1y_2\).</p>
-                <h3>🎲 Đại số tổ hợp</h3>
-                <p>Hoán vị: \(P_n = n!\); Chỉnh hợp: \(A_n^k = \frac{n!}{(n-k)!}\); Tổ hợp: \(C_n^k = \frac{n!}{k!(n-k)!}\).</p>
-                <h3>📊 Thống kê – Xác suất</h3>
-                <p>Số trung bình, trung vị, mốt. Phương sai, độ lệch chuẩn. Xác suất cổ điển \(P(A)=\frac{n(A)}{n(\Omega)}\).</p>
-            </div>
-            <div id="toan-congthuc" class="tab-subcontent">
-                <div class="formula-box">
-                    <i class="fas fa-calculator"></i> <strong>Công thức quan trọng:</strong><br>
-                    - Khoảng cách từ điểm \(M(x_0;y_0)\) đến đường thẳng \(\Delta: ax+by+c=0\): \(d = \frac{|ax_0+by_0+c|}{\sqrt{a^2+b^2}}\).<br>
-                    - Phương trình đường tròn: \((x-a)^2+(y-b)^2 = R^2\).<br>
-                    - Nhị thức Newton: \((a+b)^n = \sum_{k=0}^n C_n^k a^{n-k}b^k\).
-                </div>
-                <div class="tip-box">
-                    💡 <strong>Mẹo Casio fx-580VNX:</strong><br>
-                    🔹 Giải bất phương trình bậc 2: Menu → A → 2 (bpt) → nhập hệ số → ra tập nghiệm.<br>
-                    🔹 Tìm đỉnh parabol: Mode 5 → 3 (giải pt bậc 2) → sau khi có nghiệm bấm tiếp “=”, máy hiện x-vertex, y-vertex.<br>
-                    🔹 Thống kê: Mode 6 (STAT) → nhập số liệu → OPTN → 2 (1-Var) → lấy \(\bar{x}, s_x, s_x^2\).
-                </div>
-            </div>
-            <div id="toan-baitap" class="tab-subcontent">
-                <div class="question">
-                    <p><strong>Câu 1:</strong> Tọa độ đỉnh của parabol \(y = x^2 - 4x + 3\) là:</p>
-                    <div class="options">
-                        <div class="option">A. (-2;15)</div>
-                        <div class="option" data-correct="true">B. (2;-1)</div>
-                        <div class="option">C. (2;3)</div>
-                        <div class="option">D. (-2;-1)</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-                <div class="question">
-                    <p><strong>Câu 2:</strong> Có bao nhiêu cách chọn 2 học sinh từ 10 học sinh để trực nhật?</p>
-                    <div class="options">
-                        <div class="option">A. 90</div>
-                        <div class="option" data-correct="true">B. 45</div>
-                        <div class="option">C. 20</div>
-                        <div class="option">D. 100</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-                <div class="question">
-                    <p><strong>Câu 3:</strong> Cho tam giác ABC có AB=5, AC=7, góc A=60°. Độ dài BC bằng:</p>
-                    <div class="options">
-                        <div class="option">A. √39</div>
-                        <div class="option" data-correct="true">B. √39? (Sử dụng định lý cos: \(BC^2=5^2+7^2-2·5·7·0,5=25+49-35=39\) → BC=√39)</div>
-                        <div class="option">C. 8</div>
-                        <div class="option">D. 12</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        // Dữ liệu đầy đủ 100% trích xuất từ ảnh
+        const studentData = [
+            { stt: 215, name: "Nguyễn Tiến Đạt", dob: "13/01/2010", sbd: "24400215", room: "07", ca1: "Hóa", ca2: "Sử", toan: 6.75, d1: 7.25, d2: 5.25 },
+            { stt: 216, name: "Nguyễn Đức Dũng", dob: "02/12/2010", sbd: "24400216", room: "07", ca1: "Hóa", ca2: "Sử", toan: 6.25, d1: 7.0, d2: 7.25 },
+            { stt: 228, name: "Phạm Thị Minh Hằng", dob: "14/03/2010", sbd: "24400228", room: "07", ca1: "Hóa", ca2: "Sử", toan: 4.85, d1: 4.0, d2: 4.25 },
+            { stt: 229, name: "Vũ Thị Minh Hằng", dob: "05/04/2010", sbd: "24400229", room: "07", ca1: "Hóa", ca2: "KTPL", toan: 7.6, d1: 7.25, d2: 8.75 },
+            { stt: 271, name: "An Thị Khánh Ly", dob: "01/01/2010", sbd: "24400271", room: "08", ca1: "Anh", ca2: "Sử", toan: 3.35, d1: 5.0, d2: 7.25 },
+            { stt: 273, name: "Dương Thị Trà My", dob: "04/07/2010", sbd: "24400273", room: "09", ca1: "Anh", ca2: "Sử", toan: 7.25, d1: 5.0, d2: 5.35 },
+            { stt: 278, name: "Vũ Yến Vy", dob: "02/08/2010", sbd: "24400278", room: "09", ca1: "Anh", ca2: "Sử", toan: 8.0, d1: 4.0, d2: 6.25 },
+            { stt: 280, name: "Nguyễn Đình Bảo", dob: "26/06/2010", sbd: "24400280", room: "09", ca1: "Anh", ca2: "Sử", toan: 4.85, d1: 2.5, d2: 5.75 },
+            { stt: 282, name: "Đỗ Hoàng Linh", dob: "19/11/2010", sbd: "24400282", room: "09", ca1: "Sử", ca2: "KTPL", toan: 8.5, d1: 8.25, d2: 9.5 },
+            { stt: 283, name: "Nguyễn Đức Trường", dob: "28/06/2010", sbd: "24400283", room: "09", ca1: "Sử", ca2: "KTPL", toan: 4.5, d1: 7.5, d2: 9.25 },
+            { stt: 284, name: "Nguyễn Thị Thuý An", dob: "10/05/2010", sbd: "24400284", room: "09", ca1: "Sử", ca2: "KTPL", toan: 8.5, d1: 7.25, d2: 9.25 },
+            { stt: 285, name: "Vũ Quỳnh Anh", dob: "03/08/2010", sbd: "24400285", room: "09", ca1: "Sử", ca2: "KTPL", toan: 7.0, d1: 8.0, d2: 8.5 },
+            { stt: 287, name: "Nguyễn Tiến Công", dob: "13/07/2010", sbd: "24400287", room: "09", ca1: "Sử", ca2: "KTPL", toan: 6.0, d1: 6.0, d2: 7.25 },
+            { stt: 288, name: "Vũ Quỳnh Hương", dob: "21/06/2010", sbd: "24400288", room: "09", ca1: "Sử", ca2: "KTPL", toan: 7.0, d1: 6.5, d2: 7.5 },
+            { stt: 290, name: "Vũ Thị Thanh Lan", dob: "16/02/2010", sbd: "24400290", room: "09", ca1: "Sử", ca2: "KTPL", toan: 9.0, d1: 8.5, d2: 8.75 },
+            { stt: 291, name: "Nguyễn Thị Thanh Thủy", dob: "26/01/2010", sbd: "24400291", room: "09", ca1: "Sử", ca2: "KTPL", toan: 7.5, d1: 8.0, d2: 9.5 },
+            { stt: 292, name: "Vũ Thị Thu An", dob: "19/06/2010", sbd: "24400292", room: "09", ca1: "Sử", ca2: "KTPL", toan: 7.0, d1: 7.0, d2: 8.75 },
+            { stt: 293, name: "Ngô Thuỳ Dương", dob: "06/10/2010", sbd: "24400293", room: "09", ca1: "Sử", ca2: "KTPL", toan: 6.5, d1: 8.25, d2: 7.75 },
+            { stt: 295, name: "Vũ Thị Huyền", dob: "17/05/2010", sbd: "24400295", room: "09", ca1: "Sử", ca2: "KTPL", toan: 5.25, d1: 5.25, d2: 6.75 },
+            { stt: 296, name: "Nguyễn Tiến Mạnh", dob: "12/10/2010", sbd: "24400296", room: "09", ca1: "Sử", ca2: "KTPL", toan: 5.5, d1: 6.5, d2: 8.0 },
+            { stt: 297, name: "Đặng Tiến Lộc", dob: "04/11/2010", sbd: "24400297", room: "09", ca1: "Sử", ca2: "KTPL", toan: 7.25, d1: 6.25, d2: 7.75 },
+            { stt: 298, name: "Tô Thảo Ly", dob: "08/12/2010", sbd: "24400298", room: "09", ca1: "Sử", ca2: "KTPL", toan: 7.75, d1: 6.25, d2: 7.75 },
+            { stt: 299, name: "Lê Thị Khánh Linh", dob: "22/10/2010", sbd: "24400299", room: "09", ca1: "Sử", ca2: "KTPL", toan: 6.5, d1: 7.5, d2: 8.25 },
+            { stt: 301, name: "Nguyễn Trác Ngọc", dob: "20/11/2010", sbd: "24400301", room: "09", ca1: "Sử", ca2: "KTPL", toan: 6.85, d1: 4.6, d2: 8.75 },
+            { stt: 303, name: "Mai Nguyễn Vương Phúc", dob: "19/12/2010", sbd: "24400303", room: "09", ca1: "Sử", ca2: "KTPL", toan: 5.35, d1: 6.25, d2: 6.75 },
+            { stt: 304, name: "Đinh Việt Phượng", dob: "08/01/2010", sbd: "24400304", room: "09", ca1: "Sử", ca2: "KTPL", toan: 3.95, d1: 7.0, d2: 6.75 },
+            { stt: 305, name: "Đỗ Anh Thư", dob: "29/08/2010", sbd: "24400305", room: "09", ca1: "Sử", ca2: "KTPL", toan: 5.0, d1: 6.1, d2: 7.5 },
+            { stt: 306, name: "Trương Anh Thư", dob: "05/11/2009", sbd: "24400306", room: "09", ca1: "Sử", ca2: "KTPL", toan: 2.1, d1: 3.6, d2: 4.85 },
+            { stt: 307, name: "Khổng Quốc Vọng", dob: "10/01/2010", sbd: "24400307", room: "10", ca1: "Sử", ca2: "KTPL", toan: 1.75, d1: 5.75, d2: 6.5 },
+            { stt: 308, name: "Tạ Vũ Tường Vy", dob: "03/09/2010", sbd: "24400308", room: "10", ca1: "Sử", ca2: "KTPL", toan: 3.7, d1: 5.5, d2: 7.75 },
+            { stt: 309, name: "Đỗ Thị Như Ý", dob: "11/02/2010", sbd: "24400309", room: "10", ca1: "Sử", ca2: "KTPL", toan: 3.0, d1: 4.35, d2: 7.75 },
+            { stt: 310, name: "Nguyễn Thị Minh Anh", dob: "21/07/2010", sbd: "24400310", room: "10", ca1: "Sử", ca2: "KTPL", toan: 3.75, d1: 4.35, d2: 7.5 },
+            { stt: 312, name: "Vũ Thị Thuỳ Trang", dob: "07/10/2010", sbd: "24400312", room: "10", ca1: "Sử", ca2: "KTPL", toan: 6.25, d1: 6.0, d2: 6.6 },
+            { stt: 317, name: "Lê Hải Diệu", dob: "01/05/2010", sbd: "24400317", room: "10", ca1: "Địa", ca2: "Sử", toan: 3.5, d1: 5.85, d2: 6.75 },
+            { stt: 323, name: "Tạ Khánh Linh", dob: "19/06/2010", sbd: "24400323", room: "10", ca1: "Địa", ca2: "Sử", toan: 5.0, d1: 5.5, d2: 4.6 },
+            { stt: 326, name: "Nguyễn Quang Anh", dob: "25/03/2010", sbd: "24400326", room: "10", ca1: "Địa", ca2: "Sử", toan: 5.5, d1: 6.25, d2: 6.25 },
+            { stt: 327, name: "Nguyễn Trần Mai Lâm", dob: "19/02/2010", sbd: "24400327", room: "10", ca1: "Sử", ca2: "Địa", toan: 3.6, d1: 6.75, d2: 7.0 },
+            { stt: 328, name: "Lê Tuấn Tài", dob: "25/06/2010", sbd: "24400328", room: "10", ca1: "Sử", ca2: "Địa", toan: 4.5, d1: 5.6, d2: 5.5 },
+            { stt: 329, name: "Nguyễn Hoàng Trường", dob: "18/03/2010", sbd: "24400329", room: "10", ca1: "Sử", ca2: "Địa", toan: 4.75, d1: 5.0, d2: 5.0 },
+            { stt: 330, name: "Đinh Vũ Hà Vy", dob: "28/10/2010", sbd: "24400330", room: "10", ca1: "Sử", ca2: "Địa", toan: 2.75, d1: 3.75, d2: 6.25 },
+            { stt: 331, name: "Nguyễn Công Vinh", dob: "04/06/2010", sbd: "24400331", room: "10", ca1: "Sử", ca2: "Địa", toan: 6.5, d1: 4.25, d2: 4.75 },
+            { stt: 333, name: "Bùi Linh Hương", dob: "08/02/2010", sbd: "24400333", room: "10", ca1: "Sử", ca2: "KTPL", toan: 5.75, d1: 5.5, d2: 7.5 },
+            { stt: 334, name: "An Thị Hường", dob: "22/08/2010", sbd: "24400100", room: "10", ca1: "Sử", ca2: "KTPL", toan: 3.6, d1: 4.1, d2: 6.85 }
+        ];
 
-    <!-- LỊCH SỬ -->
-    <div id="su" class="tab-content">
-        <div class="glass-card">
-            <h1>🏯 Lịch sử 10 – Cách mạng công nghiệp & Văn minh cổ trung đại</h1>
-            <div class="sub-tab-bar">
-                <div class="sub-tab active" data-sub="su-lythuyet">📜 Lý thuyết</div>
-                <div class="sub-tab" data-sub="su-mẹo">🧠 Mẹo & Từ khóa</div>
-                <div class="sub-tab" data-sub="su-baitap">📌 Trắc nghiệm</div>
-            </div>
-            <div id="su-lythuyet" class="tab-subcontent active">
-                <h3>🏭 Cách mạng công nghiệp</h3>
-                <ul>
-                    <li>Lần 1 (cuối TK 18, Anh): Động cơ hơi nước – chuyển từ thủ công sang cơ khí.</li>
-                    <li>Lần 2 (cuối TK 19, Mỹ - Đức): Điện năng, động cơ đốt trong, dây chuyền sản xuất.</li>
-                    <li>Lần 3 (thập niên 70, thế giới): Máy tính, internet, tự động hóa.</li>
-                </ul>
-                <h3>🌏 Văn minh Đông Nam Á thời cổ - trung đại</h3>
-                <ul>
-                    <li>Chịu ảnh hưởng Ấn Độ (Phật giáo, Hinđu giáo), chữ viết Sanskrit.</li>
-                    <li>Kiến trúc đền tháp: Angkor (Campuchia), Borobudur (Indonesia).</li>
-                </ul>
-                <h3>🇻🇳 Văn minh Việt Nam trước 1858</h3>
-                <ul>
-                    <li>Văn Lang – Âu Lạc: trống đồng Đông Sơn, nông nghiệp lúa nước.</li>
-                    <li>Chăm-pa: tháp gạch, ảnh hưởng Ấn Độ giáo, chữ Phạn.</li>
-                    <li>Phù Nam: Óc Eo – thương mại đường biển phát triển.</li>
-                </ul>
-            </div>
-            <div id="su-mẹo" class="tab-subcontent">
-                <div class="tip-box">
-                    🧠 <strong>Mẹo nhận diện nhanh:</strong><br>
-                    ▪️ “CMCN lần 1” → Anh, động cơ hơi nước.<br>
-                    ▪️ “CMCN lần 2” → Mỹ/Đức, điện, động cơ đốt trong.<br>
-                    ▪️ “Văn Lang” → Trống đồng Đông Sơn, đúc đồng.<br>
-                    ▪️ “Chăm-pa” → Tháp gạch, Ấn Độ giáo.<br>
-                    ▪️ “Phù Nam” → Óc Eo, thương mại biển.
-                </div>
-                <div class="formula-box">
-                    📌 <strong>Thời gian quan trọng:</strong><br>
-                    - Khởi nghĩa Hai Bà Trưng: 40 – 43.<br>
-                    - Nhà Lý thành lập: 1009.<br>
-                    - Chiến thắng Bạch Đằng (Ngô Quyền): 938.
-                </div>
-            </div>
-            <div id="su-baitap" class="tab-subcontent">
-                <div class="question">
-                    <p><strong>Câu 1:</strong> Cách mạng công nghiệp lần thứ nhất khởi đầu ở quốc gia nào?</p>
-                    <div class="options">
-                        <div class="option" data-correct="true">A. Anh</div>
-                        <div class="option">B. Pháp</div>
-                        <div class="option">C. Mỹ</div>
-                        <div class="option">D. Đức</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-                <div class="question">
-                    <p><strong>Câu 2:</strong> Văn minh Chăm-pa chịu ảnh hưởng sâu sắc của nền văn minh nào?</p>
-                    <div class="options">
-                        <div class="option">A. Trung Hoa</div>
-                        <div class="option" data-correct="true">B. Ấn Độ</div>
-                        <div class="option">C. La Mã</div>
-                        <div class="option">D. Ai Cập</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-                <div class="question">
-                    <p><strong>Câu 3:</strong> Trống đồng Đông Sơn là di sản của nền văn minh nào?</p>
-                    <div class="options">
-                        <div class="option" data-correct="true">A. Văn Lang – Âu Lạc</div>
-                        <div class="option">B. Chăm-pa</div>
-                        <div class="option">C. Phù Nam</div>
-                        <div class="option">D. Đại Việt</div>
-                    </div>
-                    <div class="feedback"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer>© 2026 Gia Bảo Dev – Hệ thống ôn tập theo ma trận mới, tích hợp mẹo Casio & thần chú lịch sử.</footer>
-</div>
-
-<script>
-    // Chuyển tab chính
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const tabId = item.getAttribute('data-tab');
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
+        // Tính tổng điểm cho từng học sinh
+        studentData.forEach(student => {
+            student.total = (student.toan + student.d1 + student.d2).toFixed(2);
         });
-    });
 
-    // Chuyển sub tab trong mỗi môn
-    document.querySelectorAll('.sub-tab').forEach(sub => {
-        sub.addEventListener('click', () => {
-            const parentDiv = sub.closest('.glass-card');
-            const targetSub = sub.getAttribute('data-sub');
-            parentDiv.querySelectorAll('.tab-subcontent').forEach(cont => cont.classList.remove('active'));
-            parentDiv.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
-            sub.classList.add('active');
-            document.getElementById(targetSub).classList.add('active');
-        });
-    });
+        // Mặc định sắp xếp tổng điểm từ cao xuống thấp
+        studentData.sort((a, b) => b.total - a.total);
 
-    // Xử lý trắc nghiệm
-    const questions = document.querySelectorAll('.question');
-    questions.forEach(q => {
-        const opts = q.querySelectorAll('.option');
-        const feedback = q.querySelector('.feedback');
-        opts.forEach(opt => {
-            opt.addEventListener('click', () => {
-                if (q.classList.contains('answered')) return;
-                q.classList.add('answered');
-                const isCorrect = opt.hasAttribute('data-correct');
-                opts.forEach(o => {
-                    if (o.hasAttribute('data-correct')) o.classList.add('correct');
-                    o.style.pointerEvents = 'none';
-                });
-                if (!isCorrect) {
-                    opt.classList.add('wrong');
-                    feedback.innerHTML = '<i class="fas fa-times-circle"></i> Sai rồi! Xem lại lý thuyết.';
-                    feedback.style.background = '#fee2e2';
-                } else {
-                    feedback.innerHTML = '<i class="fas fa-check-circle"></i> Chính xác! Tốt lắm.';
-                    feedback.style.background = '#dcfce7';
-                }
-                feedback.style.display = 'block';
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            data.forEach(student => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${student.stt}</td>
+                    <td style="text-align: left; font-weight: 600;">${student.name}</td>
+                    <td>${student.dob}</td>
+                    <td>${student.sbd}</td>
+                    <td>${student.room}</td>
+                    <td style="color: var(--primary-purple);">${student.ca1}</td>
+                    <td style="color: var(--primary-blue);">${student.ca2}</td>
+                    <td>${student.toan}</td>
+                    <td class="${student.d1 >= 8 ? 'highlight-score' : ''}">${student.d1}</td>
+                    <td class="${student.d2 >= 8 ? 'highlight-score' : ''}">${student.d2}</td>
+                    <td class="total-col">${student.total}</td>
+                `;
+                tableBody.appendChild(tr);
             });
+        }
+
+        // Khởi tạo bảng lần đầu
+        renderTable(studentData);
+
+        // Chức năng tìm kiếm real-time
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredData = studentData.filter(student => 
+                student.name.toLowerCase().includes(searchTerm) || 
+                student.sbd.includes(searchTerm)
+            );
+            renderTable(filteredData);
         });
-    });
-</script>
+    </script>
 </body>
 </html>
