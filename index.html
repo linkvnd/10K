@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10K Ranking - Gia Bảo Coder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4facfe;
+            --secondary: #00f2fe;
+            --accent: #6a0dad;
+            --bg: #0f0c29;
+            --glass: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 800;
+        }
+
+        .header p {
+            opacity: 0.7;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: var(--primary);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+        }
+
+        tbody tr {
+            transition: 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.005);
+        }
+
+        /* Highlight cho Top 3 */
+        .rank-1 { color: #ffd700; font-weight: 700; }
+        .rank-2 { color: #c0c0c0; font-weight: 700; }
+        .rank-3 { color: #cd7f32; font-weight: 700; }
+
+        /* Highlight Gia Bảo */
+        .me {
+            background: rgba(79, 172, 254, 0.15) !important;
+            border-left: 4px solid var(--primary);
+        }
+        .me td {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 1px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.8rem; }
+            td, th { padding: 12px; font-size: 0.8rem; }
+            .dashboard { border-radius: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Class 10K Scoreboard</h1>
+        <p>Phiên bản Glassmorphism Technology - By Gia Bảo Coder</p>
+    </div>
+
+    <div class="dashboard">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hạng</th>
+                        <th>Họ và Tên</th>
+                        <th>Tổng Điểm</th>
+                        <th>Danh Hiệu</th>
+                    </tr>
+                </thead>
+                <tbody id="ranking-body">
+                    <tr><td><span class="rank-1">1</span></td><td>Nguyên Bảo Ngọc</td><td>31.0</td><td><span class="badge">Thủ khoa</span></td></tr>
+                    <tr><td><span class="rank-2">2</span></td><td>Vũ Thị Minh Phương</td><td>30.75</td><td><span class="badge">Á khoa 1</span></td></tr>
+                    <tr><td><span class="rank-3">3</span></td><td>Nguyên Thị Nguyệt Ánh</td><td>30.5</td><td><span class="badge">Á khoa 2</span></td></tr>
+                    <tr><td>4</td><td>Nguyễn Kim Ngân</td><td>30.35</td><td><span class="badge">Giỏi</span></td></tr>
+                    <tr><td>5</td><td>Phạm Quỳnh Trang</td><td>29.75</td><td><span class="badge">Giỏi</span></td></tr>
+                    <tr><td>6</td><td>Vũ Ngọc Nhi</td><td>29.0</td><td><span class="badge">Giỏi</span></td></tr>
+                    <tr><td>7</td><td>Lưu Vũ Ngọc Han</td><td>28.55</td><td><span class="badge">Giỏi</span></td></tr>
+                    <tr><td>8</td><td>Phạm Thị Thu Hà</td><td>28.1</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr class="me"><td>9</td><td>Lưu Phú Gia Bảo</td><td>28.0</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr><td>9</td><td>Phạm Thị Thanh Thảo</td><td>28.0</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr><td>11</td><td>Vũ Thị Linh Dương</td><td>27.85</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr><td>11</td><td>Chu Trần Tú Anh</td><td>27.85</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr><td>13</td><td>Trịnh Thị Nhung</td><td>27.75</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr><td>14</td><td>Đỗ Thị Hoài Anh</td><td>27.55</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr><td>15</td><td>Vũ Anh Khoa</td><td>27.0</td><td><span class="badge">Khá giỏi</span></td></tr>
+                    <tr><td>16</td><td>Ngô Thị Lan Chi</td><td>26.85</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>17</td><td>Bùi Hữu Huân</td><td>26.75</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>17</td><td>Phạm Thị Phương Mai</td><td>26.75</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>17</td><td>Phan Linh Tú</td><td>26.75</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>20</td><td>Tạ Thị Xinh</td><td>26.5</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>21</td><td>Đặng Đức Minh</td><td>25.85</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>22</td><td>Nguyễn Thị Thanh Nhàn</td><td>25.5</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>23</td><td>Nguyen Phương Thảo</td><td>25.0</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>23</td><td>Vũ Thu Phương</td><td>25.0</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>25</td><td>Nguyên Thê Lâm</td><td>24.8</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>26</td><td>Trần Văn Huy</td><td>24.75</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>27</td><td>Nguyễn Văn Tuấn</td><td>24.6</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>28</td><td>Nguyễn Văn Cường</td><td>24.45</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>29</td><td>An Hồng Nhung</td><td>24.35</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>29</td><td>Bùi Thị Linh</td><td>24.35</td><td><span class="badge">Khá</span></td></tr>
+                    <tr><td>31</td><td>Trương Đức Thắng</td><td>24.25</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>32</td><td>Bùi Thị Vân Anh</td><td>23.85</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>33</td><td>Đinh Thị Khánh Huyền</td><td>23.75</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>34</td><td>Nguyễn Hà Linh</td><td>23.35</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>35</td><td>An Thành Đạt</td><td>23.0</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>36</td><td>Đặng Thị Vân Anh</td><td>22.8</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>37</td><td>Đỏ Phạm Diệu Linh</td><td>22.25</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>38</td><td>Trần Minh Tuấn</td><td>22.1</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>39</td><td>Nguyễn Thị Mai Anh</td><td>21.1</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>40</td><td>Phạm Hà Linh</td><td>20.85</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>41</td><td>Nguyễn Vũ Hiếu</td><td>20.1</td><td><span class="badge">Trung bình khá</span></td></tr>
+                    <tr><td>42</td><td>Đô Vũ Vân Trang</td><td>19.8</td><td><span class="badge">Cố gắng thêm</span></td></tr>
+                    <tr><td>43</td><td>Vũ Ngọc Phương Vy</td><td>18.6</td><td><span class="badge">Cố gắng thêm</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">
+        DESIGNED BY GIA BẢO CODER &copy; 2026 THPT THANH MIỆN III
+    </div>
+
+</body>
+</html>
